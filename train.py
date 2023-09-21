@@ -1,3 +1,4 @@
+#!/usr/bin/env python
 # Input Single 
 
 import os
@@ -33,6 +34,8 @@ from vgg import vgg_loss, weighted_vgg_loss
 from loss import SSIMLoss
 import tensor_ops as utils
 from utils import RunningAverage
+
+import wandb
 
 
 def lock_mpi_net(model):
@@ -366,14 +369,24 @@ if __name__ == '__main__':
     feature_extract = True
     train_batch_size = args.batchsize
     val_batch_size = args.batchsize
+
     num_mpi_planes = 8
     lfsize = [352, 528, 7, 7]
-    lfsize_train = [256, 256, 7, 7]
+    lfsize_train = [192, 192, 7, 7]
     mode = 'train'
     log_step = 15
     # resume = True
 
+    wandb.login() # env variable WANDB_API_KEY must be set in your environment or manually enter!
+    
     logdir = 'logs-TAMULF+Stanford/{}-{}'.format(args.exp_name, dt.now().strftime('%d-%h_%H:%M:%S'))
+    
+    wandb.tensorboard.patch(root_logdir=logdir)
+    wandb.init(sync_tensorboard=True, 
+                       config=args, 
+                       project="lfvr",
+                       name=args.exp_name) 
+    
     summary_writer = SummaryWriter(logdir)
     os.makedirs('{}/checkpoints'.format(logdir), exist_ok=True)
 

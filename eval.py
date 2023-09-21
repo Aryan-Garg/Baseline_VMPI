@@ -190,7 +190,7 @@ if __name__ == '__main__':
     ####################################### Experiment arguments ######################################
     parser.add_argument('--results', default='test_results_new', type=str, help='directory to save results')
     
-    parser.add_argument('--gpu', default=0, type=int, help='which gpu to use')
+    parser.add_argument('--gpu', default=2, type=int, help='which gpu to use')
     parser.add_argument('--workers', default=4, type=int, help='number of workers for data loading')
     
     ######################################## Dataset parameters #######################################

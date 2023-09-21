@@ -21,7 +21,7 @@ from vgg import vgg_loss, weighted_vgg_loss
 from loss import SSIMLoss
 
 
-device = torch.device('cuda:0')
+device = torch.device('cuda:2')
 feature_extract = True
 batch_size = 1
 train_batch_size = 8
@@ -213,7 +213,7 @@ class LightFieldDataset(Dataset):
         file_path = self.filenames[idx][:-1]
         lf = np.load(os.path.join(self.lf_path, file_path)).astype(np.float32)
         img = lf[3, 3, ...]#(255 * lf[3, 3, ...]).astype(np.uint8)
-        img - normalize_lf(img)
+        img = normalize_lf(img)
         img = torch.tensor(img, dtype=torch.float)
         #lf = Image.open(self.filenames[idx])
         
