@@ -123,9 +123,13 @@ def data_augmentation(x, y, device, mode='train'):
 
 # dataset
 class LightFieldDataset(Dataset):
-    def __init__(self, path, filenames_file, depth_network, color_corr=False, transform=None, mode='train'):
+    def __init__(self, path, filenames_file, depth_network, color_corr=False, transform=None, mode='train', unimatch=False):
+        self.unimatch = unimatch
         self.lf_path = path
-        self.depth_path = os.path.join(path, '{}-depth'.format(depth_network))
+        if unimatch:
+            self.depth_path = "/data2/aryan/unimatch/dp_otherDS/"
+        else:
+            self.depth_path = os.path.join(path, '{}-depth'.format(depth_network))
         self.mode = mode
         self.color_corr = color_corr
         with open(filenames_file, 'r') as f:
@@ -160,7 +164,13 @@ class LightFieldDataset(Dataset):
 
         # get deeplens depth
         file_path = file_path.replace('npy', 'png')
-        depth = Image.open(os.path.join(self.depth_path, file_path)).convert('L')
+        if self.unimatch:
+            file_name = file_path.split("/")[-1]
+            file_name = "left_" + file_name.split(".")[0] + "_disp.png"
+            depth = Image.open(os.path.join(self.depth_path, file_path.split("/")[0] + "/" + file_path.split("/")[1] + "/" + file_name)).convert('L')
+        else:
+            depth = Image.open(os.path.join(self.depth_path, file_path)).convert('L')
+
         depth = depth.resize((W, H))
         depth = np.array(depth)/255.0
         

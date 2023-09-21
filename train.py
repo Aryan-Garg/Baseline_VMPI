@@ -73,7 +73,7 @@ def get_mask(rgbad, v, u):
         a_occ_i = a_occ_i.permute([0, 2, 3, 1])
         rgba_sr[:,:,:,i,:] = a_ini[:,i:i+1,:,:].permute([0,2,3,1])*(1-a_occ_i)
 
-    target_rgba = mpi.mpi_lf_wrapping(rgba_sr.cuda(), depth_planes[0], v, u)
+    target_rgba = mpi.mpi_lf_wrapping(rgba_sr.to(device), depth_planes[0], v, u, device=device)
     target_alpha = target_rgba[:,:,:,:,3:]
     target_alpha_sum = torch.sum(target_alpha, dim=0)
     target_alpha_sum = torch.clamp(target_alpha_sum, 0, 1)
@@ -350,9 +350,11 @@ if __name__ == '__main__':
     parser.add_argument('--filenames_file_eval', default='train_inputs/TAMULF+Stanford/val_files.txt', type=str, 
                         help='path to the filenames text file testing')
 
-    parser.add_argument('-dn', '--depth_network', default='DeepLens', type=str, 
+    parser.add_argument('-dn', '--depth_network', default='DPT', type=str, 
                         help='depth network used for depth inputs')
     
+    parser.add_argument('--unimatch', default=False, action='store_true', help='use unimatch disparity for training')
+
     ##################################### Learning parameters #########################################
     parser.add_argument('-e', '--epochs', default=5, type=int, help='number of total epochs to run')
     parser.add_argument('-bs', '--batchsize', default=8, type=int, help='batch size')
@@ -364,7 +366,10 @@ if __name__ == '__main__':
 
     device = torch.device('cuda:{}'.format(args.gpu))
     depth_net = args.depth_network
-    print('Training Variable MPI with {} depth'.format(depth_net))
+    if args.unimatch:
+        print('Training VMPI with Unimatch')
+    else:
+        print('Training Variable MPI with {} depth'.format(depth_net))
 
     feature_extract = True
     train_batch_size = args.batchsize
@@ -419,10 +424,12 @@ if __name__ == '__main__':
     model_vgg.load_state_dict(checkpoint['state_dict'])
     #optimizer2.load_state_dict(checkpoint['optimizer'])
 
-    training_set = LightFieldDataset(args.data_path, args.filenames_file, depth_net, color_corr=True, mode='train')
+    training_set = LightFieldDataset(args.data_path, args.filenames_file, depth_net, color_corr=True, 
+                                     mode='train', unimatch=args.unimatch)
     train_loader = DataLoader(training_set, train_batch_size, shuffle=True, drop_last=True)
 
-    validation_set = LightFieldDataset(args.data_path, args.filenames_file_eval, depth_net, color_corr=True, mode='validation')
+    validation_set = LightFieldDataset(args.data_path, args.filenames_file_eval, depth_net, color_corr=True, 
+                                       mode='validation', unimatch=args.unimatch)
     val_loader = DataLoader(validation_set, val_batch_size, shuffle=True, drop_last=True)
 
     repeat = 1
