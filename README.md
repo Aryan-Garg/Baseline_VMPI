@@ -1,5 +1,7 @@
 # Synthesizing Light Field From a Single Image with Variable MPI and Two Network Fusion (SIGGRAPH Asia 2020)
 
+> This work is a baseline for our work: dp-lfvr CVPR '24. All credit goes to the authors for this work. Their README is left intact.
+
 This is the code for the SIGGRAPH Asia 2020 paper.  
 Paper page: https://people.engr.tamu.edu/nimak/Papers/SIGAsia2020_LF/index.html
 
