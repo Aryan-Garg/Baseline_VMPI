@@ -6,8 +6,12 @@ tamulf = 1000
 stanford = 4100
 
 with open("./TAMULF+Stanford/train_files.txt", "w+") as f:
-    for i in range(tamulf):
-        f.write("TAMULF/train/" + str(i).zfill(4) + ".npy\n")
+    stanford_files = sorted(os.listdir("/media/data/prasan/datasets/LF_datasets/Stanford/train"))
+    # print(stanford_files)
+    tamulf_files = sorted(os.listdir("/media/data/prasan/datasets/LF_datasets/TAMULF/train"))
 
-    for i in range(stanford):
-        f.write("Stanford/train/" + str(i).zfill(4) + ".npy\n")
+    for e in tamulf_files:
+        f.write(f"TAMULF/train/{e}\n")
+
+    for e in stanford_files:
+        f.write(f"Stanford/train/{e}\n")

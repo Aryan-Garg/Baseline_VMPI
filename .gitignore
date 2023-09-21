@@ -1,4 +1,5 @@
 wandb
+log*
 temp_results
 test_results
 test_results_new
