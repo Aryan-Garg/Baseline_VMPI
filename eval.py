@@ -1,4 +1,6 @@
-# Input Single 
+#!/usr/bin/env python
+
+# Single Input
 
 import os
 import argparse
@@ -205,6 +207,7 @@ if __name__ == '__main__':
     parser.add_argument('-dn', '--depth_network', default='DeepLens', type=str, 
                         help='depth network used for depth inputs')
     parser.add_argument('-cc', '--color_corr', default=False, action='store_true')
+    parser.add_argument('--get_model_size', default=False, action='store_true')
 
     args = parser.parse_args()
     args.filenames_file = f'test_inputs/{args.dataset}/test_files.txt'
@@ -233,6 +236,36 @@ if __name__ == '__main__':
     model_vgg.load_state_dict(checkpoint['state_dict'])
     checkpoint = torch.load('checkpoints/visible_net.pth.tar', map_location='cpu')
     model_fix.load_state_dict(checkpoint['state_dict'])
+
+    if args.get_model_size:
+        param_size = 0
+        for param in model_fix.parameters():
+            param_size += param.nelement() * param.element_size()
+        buffer_size = 0
+        for buffer in model_fix.buffers():
+            buffer_size += buffer.nelement() * buffer.element_size()
+
+        size_all_mb = (param_size + buffer_size) / 1024**2
+
+        print('model-fix size: {:.3f}MB'.format(size_all_mb))
+        total_params = int(sum(p.numel() for p in model_fix.parameters()))
+        print('total_params: {:.3f}'.format(total_params))
+
+        #######################
+
+        param_size = 0
+        for param in model_vgg.parameters():
+            param_size += param.nelement() * param.element_size()
+        buffer_size = 0
+        for buffer in model_vgg.buffers():
+            buffer_size += buffer.nelement() * buffer.element_size()
+
+        size_all_mb = (param_size + buffer_size) / 1024**2
+
+        print('model-vgg size: {:.3f}MB'.format(size_all_mb))
+        total_params = int(sum(p.numel() for p in model_vgg.parameters()))
+        print('total_params: {:.3f}'.format(total_params))
+        exit()
 
     #epoch = 10
     #exp = 'vMPI-DeepLens-14-Feb_00:07:44'

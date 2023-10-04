@@ -335,10 +335,10 @@ if __name__ == '__main__':
     parser.convert_arg_line_to_args = convert_arg_line_to_args
 
     ####################################### Experiment arguments ######################################
-    parser.add_argument('-exp', '--exp_name', default='vMPI', type=str, help='name of the experiment')
+    parser.add_argument('-exp', '--exp_name', default='vMPI_trainBoth', type=str, help='name of the experiment')
     parser.add_argument('--results', default='test_results', type=str, help='directory to save results')
     
-    parser.add_argument('--gpu', default=0, type=int, help='which gpu to use')
+    parser.add_argument('--gpu', default=1, type=int, help='which gpu to use')
     parser.add_argument('--workers', default=4, type=int, help='number of workers for data loading')
     
     ######################################## Dataset parameters #######################################
@@ -356,7 +356,7 @@ if __name__ == '__main__':
     parser.add_argument('--unimatch', default=False, action='store_true', help='use unimatch disparity for training')
 
     ##################################### Learning parameters #########################################
-    parser.add_argument('-e', '--epochs', default=5, type=int, help='number of total epochs to run')
+    parser.add_argument('-e', '--epochs', default=10, type=int, help='number of total epochs to run')
     parser.add_argument('-bs', '--batchsize', default=8, type=int, help='batch size')
     parser.add_argument('-lr', '--lr', default=2e-5, type=float, help='max learning rate')
     parser.add_argument('-wd', '--wd', default=1e-3, type=float, help='weight decay')
@@ -376,7 +376,7 @@ if __name__ == '__main__':
     val_batch_size = args.batchsize
 
     num_mpi_planes = 8
-    lfsize = [352, 528, 7, 7]
+    lfsize = [384, 528, 7, 7]
     lfsize_train = [192, 192, 7, 7]
     mode = 'train'
     log_step = 15
@@ -384,7 +384,7 @@ if __name__ == '__main__':
 
     wandb.login() # env variable WANDB_API_KEY must be set in your environment or manually enter!
     
-    logdir = 'logs-TAMULF+Stanford/{}-{}'.format(args.exp_name, dt.now().strftime('%d-%h_%H:%M:%S'))
+    logdir = 'logs-TAMULF+Stanford(all_train)/{}-{}'.format(args.exp_name, dt.now().strftime('%d-%h_%H:%M:%S'))
     
     wandb.tensorboard.patch(root_logdir=logdir)
     wandb.init(sync_tensorboard=True, 
@@ -435,13 +435,11 @@ if __name__ == '__main__':
     repeat = 1
     for i in range(repeat):
         for epoch in range(args.epochs):
-            #evaluate_model(model_vgg, model_fix, val_loader, epoch+i*args.epochs, repeat*args.epochs)
+            model_fix, optimizer = train_fix_model(model_fix, train_loader, optimizer, epoch+i*args.epochs, repeat*args.epochs)
+            save_checkpoint({'state_dict': model_fix.state_dict(), 'optimizer' : optimizer.state_dict()}, filename='{}/checkpoints/visible_{:03d}.pt'.format(logdir, epoch+i*args.epochs))
+            evaluate_model(model_vgg, model_fix, val_loader, epoch+i*args.epochs, repeat*args.epochs)
 
-            #model_fix, optimizer = train_fix_model(model_fix, train_loader, optimizer, epoch+i*args.epochs, repeat*args.epochs)
-            #save_checkpoint({'state_dict': model_fix.state_dict(), 'optimizer' : optimizer.state_dict()}, filename='{}/checkpoints/visible_{:03d}.pt'.format(logdir, epoch+i*args.epochs))
-
-        #for epoch in range(args.epochs):
+        for epoch in range(args.epochs):
             model_vgg, optimizer2 = train_vgg_model(model_vgg, model_fix, train_loader, optimizer2, epoch+i*args.epochs, repeat*args.epochs)
             save_checkpoint({'state_dict': model_vgg.state_dict(), 'optimizer' : optimizer2.state_dict()}, filename='{}/checkpoints/occluded_{:03d}.pt'.format(logdir, epoch+i*args.epochs))
-
             evaluate_model(model_vgg, model_fix, val_loader, epoch+i*args.epochs, repeat*args.epochs)
