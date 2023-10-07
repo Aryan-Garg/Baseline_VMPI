@@ -16,9 +16,9 @@ import skimage.transform
 from skimage.exposure import adjust_gamma
 
 
-lfsize = [352, 528, 7, 7]
+lfsize = [480, 640, 7, 7]
 lfsize_train = [256, 256, 7, 7]
-lfsize_test = [352, 528, 7, 7]
+# lfsize_test = [352, 528, 7, 7]
 T = np.load('color_transfer.npy')
 
 def normalize_lf(lf):
@@ -123,8 +123,9 @@ def data_augmentation(x, y, device, mode='train'):
 
 # dataset
 class LightFieldDataset(Dataset):
-    def __init__(self, path, filenames_file, depth_network, color_corr=False, transform=None, mode='train', unimatch=False):
+    def __init__(self, path, filenames_file, depth_network, color_corr=False, transform=None, mode='train', unimatch=False, lfsize_test=None):
         self.unimatch = unimatch
+        self.lfsize_test = lfsize_test
         self.lf_path = path
         if unimatch:
             self.depth_path = "/data2/aryan/unimatch/dp_otherDS/"
@@ -185,6 +186,13 @@ class LightFieldDataset(Dataset):
 
         if self.mode == 'train':
             height, width = lfsize_train[:2]
+            x = random.randint(0, lf.shape[-1] - width)
+            y = random.randint(0, lf.shape[-2] - height)
+            lf = lf[:, :, :, y:y + height, x:x + width]
+            depth = depth[:, y:y + height, x:x + width]
+            
+        elif self.mode == 'validation':
+            height, width = self.lfsize_test[:2]
             x = random.randint(0, lf.shape[-1] - width)
             y = random.randint(0, lf.shape[-2] - height)
             lf = lf[:, :, :, y:y + height, x:x + width]

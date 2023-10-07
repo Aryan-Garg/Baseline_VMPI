@@ -1,0 +1,27 @@
+Sample  0 => PSNR: 31.4849, SSIM: 0.9438, Time: 3.439
+Sample  1 => PSNR: 26.9058, SSIM: 0.8892, Time: 3.465
+Sample  2 => PSNR: 25.2814, SSIM: 0.9218, Time: 3.452
+Sample  3 => PSNR: 28.6642, SSIM: 0.9050, Time: 3.475
+Sample  4 => PSNR: 27.9127, SSIM: 0.9236, Time: 3.405
+Sample  5 => PSNR: 18.3524, SSIM: 0.8066, Time: 3.407
+Sample  6 => PSNR: 28.2345, SSIM: 0.9213, Time: 3.489
+Sample  7 => PSNR: 28.5024, SSIM: 0.9238, Time: 3.574
+Sample  8 => PSNR: 28.3345, SSIM: 0.9165, Time: 3.519
+Sample  9 => PSNR: 29.2824, SSIM: 0.9269, Time: 3.440
+Sample 10 => PSNR: 26.3314, SSIM: 0.8846, Time: 3.623
+Sample 11 => PSNR: 22.6503, SSIM: 0.8819, Time: 3.482
+Sample 12 => PSNR: 17.8630, SSIM: 0.8292, Time: 3.624
+Sample 13 => PSNR: 29.1909, SSIM: 0.8894, Time: 3.415
+Sample 14 => PSNR: 28.4190, SSIM: 0.8905, Time: 3.517
+Sample 15 => PSNR: 28.3130, SSIM: 0.9288, Time: 3.500
+Sample 16 => PSNR: 29.3135, SSIM: 0.9245, Time: 3.524
+Sample 17 => PSNR: 23.8521, SSIM: 0.9007, Time: 3.420
+Sample 18 => PSNR: 18.8649, SSIM: 0.8388, Time: 3.452
+Sample 19 => PSNR: 27.9631, SSIM: 0.8789, Time: 3.473
+Sample 20 => PSNR: 28.2576, SSIM: 0.8916, Time: 3.447
+Sample 21 => PSNR: 28.2848, SSIM: 0.9157, Time: 3.685
+Sample 22 => PSNR: 28.6356, SSIM: 0.9272, Time: 3.445
+Sample 23 => PSNR: 18.9720, SSIM: 0.8554, Time: 3.521
+Sample 24 => PSNR: 23.7152, SSIM: 0.8746, Time: 3.572
+Average PSNR: 26.1433
+Average SSIM: 0.8956 Average Time: nan
