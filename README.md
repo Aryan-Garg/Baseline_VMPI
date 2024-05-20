@@ -1,3 +1,5 @@
+# [ICCP 2024] Stereo-Knowledge Distillation from dpMV to Dual Pixels for Light Field Video Reconstruction
+
 # Baseline: VMPI - Synthesizing Light Field From a Single Image with Variable MPI and Two Network Fusion (SIGGRAPH Asia 2020)
 
 ```
